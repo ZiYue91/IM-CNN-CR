@@ -1,0 +1,165 @@
+数据位于thin_cloud_removal\datasets\multi5.zip,数据说明见thin_cloud_removal\datasets\数据说明.txt。
+运行代码前将multi5.zip解压到当前位置。
+我们的代码是基于pix2pix的pytorch版本修改得到的，所以pytorch环境配置参照pix2pix。
+
+
+步骤一：训练UNet
+
+训练：
+python train.py --dataroot 
+./datasets/multi5/train 
+--name
+ unet20211115 
+--model 
+unet
+ 
+--lambda_A 
+100 
+--dataset_mode 
+alignedmulti5 
+--pool_size 
+0
+ --input_nc 
+5
+ --output_nc 
+5
+ --loadSize 
+256 --norm 
+batch 
+--niter 
+100 
+--niter_decay 
+100
+ --lr_decay_iters
+ 50
+ --display_id 
+0 
+--nThreads 
+4 
+--save_epoch_freq
+ 20
+ --batchSize
+ 1 
+--gpu_ids
+ 0
+
+测试：
+python test.py --dataroot 
+./datasets/multi5/test
+ --name 
+unet20211115 --model 
+unet
+ --dataset_mode
+ alignedmulti5
+ --input_nc 
+5 
+--output_nc 
+5 
+--loadSize
+ 256 
+--which_epoch 
+latest
+ --norm 
+batch
+ --how_many 
+850
+ --gpu_ids 
+0
+
+
+
+步骤二：训练SlopeNet
+
+训练：
+python train.py --dataroot 
+./datasets/multi5/train 
+--name
+ slopenet20211115 
+--model 
+slopenet 
+--lambda_A 
+100 
+--dataset_mode 
+alignedmulti5 
+--pool_size 
+0
+ --input_nc 
+5
+ --output_nc 
+5
+ --loadSize 
+256 --norm 
+batch 
+--niter 
+100 
+--niter_decay 
+100
+ --lr_decay_iters
+ 50
+ --display_id 
+0 
+--nThreads 
+4 
+--save_epoch_freq
+ 20
+ --batchSize
+ 1 
+--gpu_ids
+ 0
+
+测试：
+python test.py --dataroot 
+./datasets/multi5/test
+ --name 
+slopenet20211115
+ --model 
+slopenet
+ --dataset_mode
+ alignedmulti5
+ --input_nc 
+5 
+--output_nc 
+5 
+--loadSize
+ 256 
+--which_epoch 
+latest
+ --norm 
+batch
+ --how_many 
+850
+ --gpu_ids 
+0
+
+
+
+步骤三：使用训练好的UNet和SlopeNet测试
+
+首先在checkpoints下新建一个test20211115
+的文件夹，将checkpoints\unet20211115中的latest_net_T.pth和checkpoints\slopenet20211115中的latest_net_S.pth拷贝到checkpoints\test20211115中；
+然后运行 python test.py --dataroot 
+./datasets/multi5/test
+ --name 
+test20211115
+ --model 
+test --dataset_mode
+ alignedmulti5
+ --input_nc 
+5 
+--output_nc 
+5 
+--loadSize
+ 256 
+--which_epoch 
+latest
+ --norm 
+batch
+ --how_many 
+850
+ --gpu_ids 
+0
+
+结果见results\test20211115
+
+
+定量指标计算见MATLAB代码：cal_metrics.m
