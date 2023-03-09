@@ -1,0 +1,13 @@
+﻿train：训练集
+test：测试集
+
+train和test中：
+	real：无云图像
+	simulate：薄云图像
+
+real和simulate中：
+	432：Landsat-8 Band 4,3,2合成图像（R,G,B波段）
+	951：参考薄云厚度图和Landsat-8 Band 5,1合成图像
+
+simulate中：
+	txt：厚度系数（波段5-1的厚度系数，波段1的厚度系数为1）
